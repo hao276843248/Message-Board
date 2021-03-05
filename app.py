@@ -17,7 +17,7 @@ def hello_world():
 
 @app.route('/get_data')
 def get_data():
-    path = sys.path[0] + "\msg.db"
+    path = sys.path[0] + "/msg.db"
     with open(path) as f:
         msg = f.readlines()
     errno = 1
@@ -36,7 +36,7 @@ def msg_input():
         # 1. 获取到传入参数
         data_dict = request.json
         msg = data_dict.get("msg")
-        path = sys.path[0] + "\msg.db"
+        path = sys.path[0] + "/msg.db"
         if msg:
             with open(path, "a") as f:
                 f.write(msg + "\n")
