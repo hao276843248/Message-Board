@@ -1,9 +1,13 @@
+import os
 import sys
 
 import flask
 from flask import Flask, request, render_template, jsonify, current_app
+import time
 
 app = Flask(__name__)
+
+tokens = {}
 
 
 @app.route('/')
@@ -17,20 +21,27 @@ def get_data():
     with open(path) as f:
         msg = f.readlines()
     errno = 1
+    key = str(time.time())
+    tokens["key"] = key
     if request.cookies.get("session") == "Trues":
         errno = 0
-    return jsonify(data=msg, errno=errno)
+    mkres = flask.make_response(jsonify({"data": msg, "errno": errno}))
+    mkres.set_cookie('token', key)  # 设置token 签名
+    return mkres
 
 
 @app.route('/input', methods=["POST"])
 def msg_input():
-    # 1. 获取到传入参数
-    data_dict = request.json
-    msg = data_dict.get("msg")
-    path = sys.path[0] + "\msg.db"
-    if msg:
-        with open(path, "a") as f:
-            f.write(msg + "\n")
+    if request.cookies.get("token") == tokens.get("key"):
+        # 1. 获取到传入参数
+        data_dict = request.json
+        msg = data_dict.get("msg")
+        path = sys.path[0] + "\msg.db"
+        if msg:
+            with open(path, "a") as f:
+                f.write(msg + "\n")
+    else:
+        return jsonify(errno=0, msg="风控异常")
     return jsonify(errno=0)
 
 
