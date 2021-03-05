@@ -78,7 +78,7 @@ def admin_logout():
 @app.route('/delete/<int:index>', methods=["POST"])
 def delete(index):
     if request.cookies.get("session") == "Trues":
-        path = sys.path[0] + "\msg.db"
+        path = sys.path[0] + "/msg.db"
         with open(path) as f:
             msg = f.readlines()
         msg.pop(index)
