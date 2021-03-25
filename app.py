@@ -9,7 +9,7 @@ import time
 app = Flask(__name__)
 
 tokens = {}
-session = {}
+session = {"session":time.time()}
 
 
 class FileUtil():
@@ -55,7 +55,7 @@ def get_data():
     errno = 1
     key = str(time.time())
     tokens["key"] = key
-    if request.cookies.get("session") == tokens.get("session"):
+    if request.cookies.get("session") == session.get("session"):
         errno = 0
     mkres = flask.make_response(jsonify({"data": FILE_UTIL.read(), "errno": errno}))
     mkres.set_cookie('token', key)  # 设置token 签名
