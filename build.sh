@@ -30,7 +30,7 @@ else
   fi
 fi
 
-PID=$(ps -ef | grep python3 | grep app.py | awk '{ print $2 }')
+PID=$(ps -ef | grep python | grep app.py | awk '{ print $2 }')
 if [ -z "$PID"]; then
   python app.py >>log.log 2>&1 &
   echo "启动服务...."
