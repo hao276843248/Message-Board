@@ -1,7 +1,7 @@
+var page_index = 1
 $(function () {
     // 首次进入
-    updateData()
-
+    updateData(page_index)
     $(".pass_info").submit(function (e) {
         e.preventDefault();
 
@@ -16,8 +16,8 @@ $(function () {
             contentType: "application/json",
             data: JSON.stringify(params),
             success: function (resp) {
-                if (resp.errno == "0") {
-                    updateData()
+                if (resp.errno === 0) {
+                    updateData(1)
                 } else {
                     alert(resp.errno)
                 }
@@ -41,7 +41,7 @@ $(function () {
                 errmsg = '<div class="error_tip" style="display: block">' + resp.errmsg + '</div>'
                 $('.login_form').html('')
                 if (resp.errno == 0) {
-                    updateData()
+                    updateData(page_index)
                 } else {
                     $('.login_form').html('')
                     var content = '<h1 class="login_title">用户登录</h1>' +
@@ -56,6 +56,9 @@ $(function () {
     })
 })
 
+/**
+ * 登出
+ */
 function logout() {
     $.ajax({
         url: "/logout",
@@ -66,13 +69,16 @@ function logout() {
     })
 }
 
-function deletes(index) {
+/**
+ * 删除内容
+ */
+function deletes(i) {
     $.ajax({
-        url: "/delete/" + index,
+        url: "/delete/" + (i + (10 * (page_index - 1))),
         type: "post",
         success: function (resp) {
-            if (resp.errno == "0") {
-                updateData()
+            if (resp.errno === 0) {
+                updateData(page_index)
             } else {
                 alert(resp.errmsg)
             }
@@ -80,10 +86,33 @@ function deletes(index) {
     })
 }
 
-function updateData() {
-    $.get('/get_data', function (resp) {
+/**
+ * 更新页面
+ */
+function updateData(index = 1) {
+    page_index = index
+    $.get('/total', function (resp) {
+        new Pagination({
+            element: '#pages',
+            type: 1,
+            pageIndex: page_index,
+            pageSize: 10,
+            pageCount: 7,
+            total: resp.data,
+            jumper: true,
+            singlePageHide: false,
+            prevText: '上一页',
+            nextText: '下一页',
+            disabled: true,
+            currentChange: function (index) {
+                console.log(index);
+                page_index = index
+                updateData(index)
+            }
+        });
+    })
+    $.get('/get_data?index=' + index, function (resp) {
         if (resp) {
-            // alert(resp)
             $('.list_con').html('')
             for (var i = 0; i < resp.data.length; i++) {
                 var news = resp.data[i]
@@ -108,6 +137,10 @@ function updateData() {
                     '<input type="password" name="password" placeholder="密码" class="input_txt">'
                 content += '<input type = "submit" value = "登 录" class= "input_sub" >'
                 $(".login_form").append(content)
+            }
+            if (resp.data.length === 0 && page_index !== 1) {
+                page_index = page_index - 1
+                updateData(page_index)
             }
         }
     })
