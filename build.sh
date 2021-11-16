@@ -18,7 +18,7 @@ else
 fi
 
 echo "检测服务是否运行..."
-PID=$(ps -ef | grep python | grep app.py | awk '{ print $2 }')
+PID=$(ps -ef | grep python3 | grep app.py | awk '{ print $2 }')
 if [ -z "$PID" ]; then
   echo "服务未运行...."
 else
@@ -30,9 +30,9 @@ else
   fi
 fi
 
-PID=$(ps -ef | grep python | grep app.py | awk '{ print $2 }')
+PID=$(ps -ef | grep python3 | grep app.py | awk '{ print $2 }')
 if [ -z "$PID"]; then
-  python app.py >>log.log 2>&1 &
+  python3 app.py >>log.log 2>&1 &
   echo "启动服务...."
 fi
 echo "服务正在运行...."
