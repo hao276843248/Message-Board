@@ -23,7 +23,7 @@ if [ -z "$PID" ]; then
   echo "服务未运行...."
 else
   echo "服务运行中...."
-  if [ "$RestartServer"==true ]; then
+  if [ "$RestartServer" == true ]; then
     echo "删除服务...."
     kill -9 $PID
     echo "killed "+$PID+""
@@ -31,7 +31,7 @@ else
 fi
 
 PID=$(ps -ef | grep python3 | grep app.py | awk '{ print $2 }')
-if [ -z "$PID"]; then
+if [ -z "$PID" ]; then
   python3 app.py >>log.log 2>&1 &
   echo "启动服务...."
 fi
