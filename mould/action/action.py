@@ -11,7 +11,7 @@ from mould.util import FILE_UTIL, message_filter
 action = Blueprint('action', __name__)
 
 
-@action.route('/get_data')
+@action.route('/get_data', methods=["GET"])
 def get_data():
     a = request.args.to_dict()
     index = int(a.setdefault("index", 1))

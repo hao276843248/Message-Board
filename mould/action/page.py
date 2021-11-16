@@ -11,6 +11,6 @@ from mould.util import FILE_UTIL, message_filter
 page = Blueprint('page', __name__)
 
 
-@page.route('/total')
+@page.route('/total',methods=["GET"])
 def total():
     return jsonify(errno=0, msg="", data=FILE_UTIL.total())
