@@ -13,7 +13,8 @@ action = Blueprint('action', __name__)
 
 @action.route('/get_data')
 def get_data():
-    index = request.args.get("index", default=1, type=int)
+    index = request.args.get("index")
+    index = 1 if index == None else int(index)
     errno = 1
     key = str(time.time())
     tokens["key"] = key
